@@ -15,11 +15,13 @@
  */
 package com.meleemistress.funfunfun.notation;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.function.BinaryOperator;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import com.meleemistress.funfunfun.interfaces.MathyStuff;
 
 /**
  * @author hparry
@@ -27,12 +29,23 @@ import static org.junit.Assert.*;
  */
 public class NotationTest {
     
-    BinaryOperator<Integer> add = (Integer x, Integer y) -> x + y;
+    
     
     @Test
     public void testAdd() {
-        
+        BinaryOperator<Integer> add = (Integer x, Integer y) -> x + y;
         assertEquals(Integer.valueOf(5), add.apply(2, 3));
+    }
+    
+    @Test
+    public void testDoMath() {
+        MathyStuff multiply = (x, y) -> x * y;
+        assertEquals(8, multiply.doMath(4,  2));
+        
+        MathyStuff add = (x, y) -> x + y;
+        assertEquals(10, add.doMath(8, 2));
+        
+        assertEquals(10, add.doMath(multiply.doMath(4, 2), 2));
     }
 
 }
