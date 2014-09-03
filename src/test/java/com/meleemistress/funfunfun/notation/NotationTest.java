@@ -15,11 +15,13 @@
  */
 package com.meleemistress.funfunfun.notation;
 
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,12 +65,37 @@ public class NotationTest {
 
     @Test
     public void testFlatMap() {
-        List<Integer> list = Stream.of(Arrays.asList(1, 2, 3),
-                                       Arrays.asList(4, 5)).flatMap(numbers -> numbers.stream()).map(num -> num * 2).collect(Collectors.toList());
+        List<Integer> list = Stream.of(asList(1, 2, 3), asList(4, 5)).flatMap(numbers -> numbers.stream()).map(num -> num * 2).collect(toList());
         Stream.of(list).filter(number -> {
             System.out.println(number);
             return true;
         }).count();
         assertEquals(2, list.get(0).intValue());
+    }
+
+    @Test
+    public void testReduce() {
+        List<Integer> list = asList(1, 2, 3, 4);
+        int sum = list.stream().reduce(0, (acc, elem) -> acc + elem);
+        assertEquals(10, sum);
+    }
+
+    @Test
+    public void testCountLowercase() {
+        String foo = "Foo";
+        int count = foo.chars().map((int elem) -> Character.isLowerCase(elem) ? 1
+                                                                             : 0).sum();
+        assertEquals(2, count);
+    }
+
+    @Test
+    public void testMostLowercase() {
+        Function<String, Integer> countLowercase = (String string) -> string.chars().map((int elem) -> Character.isLowerCase(elem) ? 1
+                                                                                                                                  : 0).sum();
+        String most = asList("Foo", "BAR", "baz", "duuuuuude", "DUUUUUUdDE").stream().reduce("",
+                                                                                             (current,
+                                                                                              elem) -> countLowercase.apply(current) > countLowercase.apply(elem) ? current
+                                                                                                                                                                 : elem);
+        assertEquals("duuuuuude", most);
     }
 }
