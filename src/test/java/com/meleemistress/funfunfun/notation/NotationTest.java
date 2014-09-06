@@ -122,4 +122,25 @@ public class NotationTest {
         System.out.println(list);
 
     }
+    
+    @Test
+    public void testFilterImplementation() {
+        List<Integer> list = filter(asList(1, 2, 3, 4, 5), elem -> elem % 2 == 0);
+        assertEquals(Integer.valueOf(2), list.get(0));
+    }
+    
+    private <T> List<T> filter(List<T> list, Predicate<? super T> filterLambda) {
+        return list.stream().reduce(new ArrayList<T>(), (List<T> accumulator, T elem) -> {
+            if (accumulator == null) {
+                accumulator = new ArrayList<>();
+            }
+            if (filterLambda.test(elem)) {
+                accumulator.add(elem);
+            }
+            return accumulator;
+        }, (listA, listB) -> {
+            listA.addAll(listB);
+            return listA;
+        });
+    }
 }
