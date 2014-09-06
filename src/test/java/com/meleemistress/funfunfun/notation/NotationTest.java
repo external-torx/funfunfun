@@ -19,7 +19,9 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -97,5 +99,27 @@ public class NotationTest {
                                                                                               elem) -> countLowercase.apply(current) > countLowercase.apply(elem) ? current
                                                                                                                                                                  : elem);
         assertEquals("duuuuuude", most);
+    }
+
+    @Test
+    public void testMapImplementation() {
+        Function<Integer, Integer> lambda = arg -> arg * 2;
+
+        List<Integer> list = Stream.of(1, 2, 3).reduce(new ArrayList<Integer>(),
+                                                       (BiFunction<List<Integer>, ? super Integer, List<Integer>>) (List<Integer> accumulator,
+                                                                                                                    Integer elem) -> {
+                                                           if (accumulator == null) {
+                                                               accumulator = new ArrayList<Integer>();
+                                                           }
+                                                           accumulator.add(lambda.apply(elem));
+                                                           return accumulator;
+                                                       }, (listA, listB) -> {
+                                                           listA.addAll(listB);
+                                                           return listA;
+                                                       });
+
+        assertEquals(Integer.valueOf(2), (Integer) list.get(0));
+        System.out.println(list);
+
     }
 }
